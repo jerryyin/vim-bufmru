@@ -110,19 +110,10 @@ function bufmru#noautocmd()
 	augroup END
 endfunction
 
-function bufmru#autocmd()
+function! bufmru#autocmd()
 	augroup bufmru_buffers
 		autocmd!
 		autocmd BufEnter * call bufmru#enter()
-		"autocmd BufLeave * call bufmru#leave()
-		"autocmd InsertEnter,InsertLeave * call bufmru#save("InsertEnter,InsertLeave")
 		autocmd InsertEnter * call bufmru#save("InsertEnter")
-		autocmd InsertLeave * call bufmru#save("InsertLeave")
-		autocmd TextChanged * call bufmru#save("TextChanged")
-		autocmd TextChangedI * call bufmru#save("TextChangedI")
- 		"autocmd CursorHold,CursorHoldI * call bufmru#save("CursorHold,CursorHoldI")
-		"autocmd CursorMoved * call bufmru#save_change("CursorMoved", 0.1)
-		autocmd CursorMovedI * call bufmru#save_change("CursorMovedI", 0.1)
 	augroup END
 endfunction
-
