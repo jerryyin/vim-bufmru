@@ -70,7 +70,7 @@ function! bufmru#lightline#buffer_tag(buf, bufs, active)
   "  let name = '['.name.']'
   "endif
   let text = bufmru#lightline#nr2superscript(a:buf) . name
-  let markup = '%' . a:buf . '@bufmru#lightline#bufgo@' . text . '%T'
+  let markup = text
   "if a:active
   "  let markup = '%#' . g:bufmru_lightline_highlight_active . '#' . markup . '%#' . g:bufmru_lightline_highlight . '#'
   "else
