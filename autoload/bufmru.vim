@@ -117,3 +117,20 @@ function! bufmru#autocmd()
 		autocmd InsertEnter * call bufmru#save("InsertEnter")
 	augroup END
 endfunction
+
+function! BufMRUAutoClose()
+  let nb_to_keep = g:bufmru_nb_to_keep  
+  " If the lenth of buffer list is small, return early
+  let bufmru_bnrs = BufMRUList()
+  if nb_to_keep >= len(bufmru_bnrs)
+    return
+  endif
+  let nb_to_strip = len(bufmru_bnrs) - nb_to_keep
+  " The newly opened one is ranked last, remove it
+  let buflru_bnrs = reverse(copy(bufmru_bnrs[0:-2]))
+  " May need to filter out modified buffers
+  " Right now will error out and not delete modified buffer
+  "filter(buflru_bnrs, 'buflisted(v:val) && !getbufvar(v:val, "&modified")')
+  let buffers_to_strip = buflru_bnrs[0:(nb_to_strip-1)]
+  exe 'bw '.join(buffers_to_strip, ' ')
+endfunction
