@@ -1,49 +1,49 @@
-BufMRU: Switch buffers in most recently used order
-==================================================
+# BufMRU - Most Recently Used Buffer Manager for Vim
 
-Install this plugin using:
+BufMRU is a lightweight Vim plugin that manages recently used buffers and automatically closes the oldest ones to maintain a specified maximum number of open buffers. This helps keep your buffer list manageable without needing to close each buffer manually.
 
-    Plug 'mildred/vim-bufmru'
+## Features
 
-Set the mapping:
+- Automatically close the oldest buffers when you exceed a user-defined limit.
+- Customize the maximum number of open buffers.
+- Beautiful, readable buffer tags in the statusline with unique formatting.
+- Lightline integration to display the buffer name with a distinct prefix.
 
-    " Alt-B or Alt-Shift-B to navigate buffers in insert mode and normal mode
-    imap <A-B> <C-O>:BufMRUPrev<CR>
-    imap <A-b> <C-O>:BufMRUNext<CR>
-    map <A-B> :BufMRUPrev<CR>
-    map <A-b> :BufMRUNext<CR>
-    nmap <Esc>B :BufMRUPrev<CR>
-    nmap <Esc>b :BufMRUNext<CR>
+## Installation
 
-    " Key above escape (on french keyboards) to commit current buffer as last
-    " used
-    map ² :BufMRUCommit<CR>
+### Using vim-plug
 
-    " Tab and Shift-Tab in normal mode to navigate buffers
-    map <Tab> :BufMRUNext<CR>
-    map <S-Tab> :BufMRUPrev<CR>
+Add the following line to your `.vimrc`:
 
-You are supposed to be able to press multiple times the Alt-B or Alt-Shift-B
-key sequences to get to the next file. Like many editors have Ctrl-Tab and
-Ctrl-Shift-Tab.
+```vim
+Plug 'jerryyin/vim-bufmru'
+```
+Then, install the plugin `:PlugInstall`
 
-The list is reordered with the current buffer put in front when you make use of
-that buffer. This involves moving the cursor around, changing the buffer content
-or switching to and back from insert mode.
+## Usage
+BufMRU automatically keeps the most recently used buffers open, closing the oldest buffers when the limit (g:bufmru_nb_to_keep) is exceeded.
 
-This plugin works with [vim-airline](https://github.com/vim-airline/vim-airline/)
-and has a very nice plugin for [lightline.vim](https://github.com/itchyny/lightline.vim/).
+### Configuration
+Set the maximum number of buffers to keep open:
 
-Don't forget this is a vim plugin and everything is in the documentation
-[`:help bufmru.txt`](doc/bufmru.txt).
+```vim
+let g:bufmru_nb_to_keep = 25  " Default is 25
+```
+This example will keep 25 buffers open. When a new buffer is opened and the limit is exceeded, the oldest buffer is closed automatically.
 
-Note: I just learnt to use vim and created this plugin because I didn't find
-anything suitable for me. This is my first vim plugin ever and can probably be
-improved.
+### Lightline Integration
+BufMRU supports displaying buffer names with unique formatting in Lightline. To enable Lightline integration, include the following in your .vimrc:
 
-Hacking
-=======
+```vim
+Copy code
+let g:lightline = {
+      \ 'active': { 'left': [ [ 'mode', 'paste' ], [ 'bufmru' ] ] },
+      \ 'component_function': { 'bufmru': 'bufmru#lightline#buffer_tag' },
+      \ }
+```
+The buffer names will display in the format 5✦ filename where 5 is the buffer number.
 
-Regenerate documentation tags:
+### Functions
+`BufMRUAutoClose()`
 
-    :helptags doc
+This function is triggered automatically when you enter a new buffer. It ensures that the number of open buffers does not exceed `g:bufmru_nb_to_keep`.
