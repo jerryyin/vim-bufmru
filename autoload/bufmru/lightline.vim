@@ -62,21 +62,25 @@ endfunction
 let g:bufmru_lightline_highlight = 'LightlineLeft_tabline_0'
 let g:bufmru_lightline_highlight_active = 'LightlineLeft_tabline_tabsel_0'
 
+" Update the buffer_tag function to use the new format with punctuation
 function! bufmru#lightline#buffer_tag(buf, bufs, active)
+  " Get the buffer name and handle modifications
   let name = bufmru#lightline#buffer_name(str2nr(a:buf), a:bufs)
   let name = substitute(name, '%', '%%', 'g')
-  let name .= (getbufvar(a:buf, "&mod")?'*':'')
-  "if a:active
-  "  let name = '['.name.']'
-  "endif
-  let text = bufmru#lightline#nr2superscript(a:buf) . name
+  let name .= (getbufvar(a:buf, "&mod") ? '*' : '')
+
+  " Format the buffer number with punctuation
+  let text = bufmru#lightline#nr_format(a:buf) . name
+  "let text = bufmru#lightline#nr2superscript(a:buf) . name
   let markup = text
-  "if a:active
-  "  let markup = '%#' . g:bufmru_lightline_highlight_active . '#' . markup . '%#' . g:bufmru_lightline_highlight . '#'
-  "else
-  "  let markup = '%#' . g:bufmru_lightline_highlight . '#' . markup
-  "endif
+
   return [a:buf.name, markup]
+endfunction
+
+" New function to add punctuation marks around the buffer number
+function! bufmru#lightline#nr_format(nr)
+  " Use the new format with brackets ✦ after the number
+  return '' . a:nr . '✦ '
 endfunction
 
 function! bufmru#lightline#nr2superscript(nr)
