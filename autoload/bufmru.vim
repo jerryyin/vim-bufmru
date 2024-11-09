@@ -7,10 +7,6 @@ function! bufmru#sort(b1, b2)
 endfunction
 
 function! bufmru#enter()
-  call bufmru#save("enter()")
-endfunction
-
-function! bufmru#save(reason)
   let i = bufnr("%")
   if buflisted(i)
     let s:bufmru_files[i] = reltime()  " Update with the current time when buffer is entered
@@ -47,13 +43,6 @@ function! bufmru#show()
     let buft = reltimestr(BufMRUTime(buf))
     echom buf . " | " . buft . "s | " . bufn
   endfor
-endfunction
-
-function! bufmru#go(inc)
-  let list = BufMRUList()
-  let idx = index(list, bufnr("%"))
-  let i = list[(idx + a:inc) % len(list)]
-  execute "buffer" i
 endfunction
 
 function! bufmru#init()
