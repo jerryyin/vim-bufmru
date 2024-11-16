@@ -71,7 +71,7 @@ function! BufMRUAutoClose()
   " Only proceed if the buffer count exceeds the max allowed
   if len(buffers) > g:bufmru_nb_to_keep
     " Sort buffers by last used time in ascending order
-    call sort(buffers, {a, b -> getbufinfo(a)->lastused - getbufinfo(b)->lastused})
+    call sort(buffers, {a, b -> get(getbufinfo(a), 'lastused', 0) - get(getbufinfo(b), 'lastused', 0)})
 
     " Close the oldest buffers to maintain the max allowed
     for i in range(0, len(buffers) - g:bufmru_nb_to_keep - 1)
