@@ -31,7 +31,7 @@ function! BufMRUTime(bufn)
 endfunction
 
 function! BufMRUList()
-  let bufs = filter(range(1, bufnr("$")), 'buflisted(v:val)')
+  let bufs = GetActiveBuffers()
   call sort(bufs, "bufmru#sort")
   return bufs
 endfunction
@@ -55,6 +55,7 @@ function! bufmru#autocmd()
   augroup bufmru_buffers
     autocmd!
     autocmd BufEnter * call bufmru#enter()
+    autocmd BufEnter * call bufmru#autoclose()
   augroup END
 endfunction
 
@@ -63,26 +64,32 @@ if !exists("g:bufmru_nb_to_keep")
   let g:bufmru_nb_to_keep = 25
 endif
 
-" Function to limit open buffers to the specified maximum
-function! BufMRUAutoClose()
-  " Get a list of all listed buffers and their usage info
-  let buffers = filter(range(1, bufnr('$')), 'buflisted(v:val)')
-
-  " Only proceed if the buffer count exceeds the max allowed
-  if len(buffers) > g:bufmru_nb_to_keep
-    " Sort buffers by last used time in ascending order
-    call sort(buffers, {a, b -> get(getbufinfo(a), 'lastused', 0) - get(getbufinfo(b), 'lastused', 0)})
-
-    " Close the oldest buffers to maintain the max allowed
-    for i in range(0, len(buffers) - g:bufmru_nb_to_keep - 1)
-      execute 'bdelete' buffers[i]
-    endfor
-  endif
+function! GetActiveBuffers()
+  let l:blist = getbufinfo({'buflisted': 1})
+  let l:result = []
+  for l:item in l:blist
+      " Skip unnamed buffers
+      if empty(l:item.name)
+          continue
+      endif
+      call add(l:result, l:item.bufnr)
+  endfor
+  return l:result
 endfunction
 
-" Autocommand to trigger BufMRUAutoClose every time a new buffer is entered
-augroup BufMRUAutoCloseGroup
-  autocmd!
-  autocmd BufEnter * call BufMRUAutoClose()
-augroup END
+" Function to limit open buffers to the specified maximum
+function! bufmru#autoclose()
+  " Get the sorted list of buffers
+  let buffers = BufMRUList()
 
+  " Only proceed if the buffer count exceeds the max allowed
+  if len(buffers) <= g:bufmru_nb_to_keep
+    return
+  endif
+
+  let to_delete = len(buffers) - g:bufmru_nb_to_keep
+  " Delete the oldest buffers to maintain the max allowed
+  for i in range(len(buffers) - 1, len(buffers) - to_delete, -1)
+    execute 'bdelete' buffers[i]
+  endfor
+endfunction
