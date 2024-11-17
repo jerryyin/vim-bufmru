@@ -11,7 +11,7 @@ function! bufmru#enter()
   if buflisted(i)
     let s:bufmru_files[i] = reltime()  " Update with the current time when buffer is entered
     " Trigger UI update only if needed
-    silent doautocmd User BufMRUChange
+    "silent doautocmd User BufMRUChange
     if get(g:, 'airline#extensions#tabline#enabled', 0)
       call airline#extensions#tabline#buflist#invalidate()
     endif
