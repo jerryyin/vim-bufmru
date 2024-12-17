@@ -227,7 +227,7 @@ function! bufmru#lightline#tabnum()
     return '' " no tabs
   endif
   let nr = tabpagenr()
-  return '%0@bufmru#lightline#tabnum_click@ tab: '.nr.' %X'
+  return 'tab: '.nr.' %X'
 endfunction
 
 function! bufmru#lightline#tabnum_click(num, numclicks, mousebtn, modifiers)
