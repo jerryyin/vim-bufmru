@@ -32,6 +32,11 @@ function! bufmru#lightline#buffer_name(buf, bufs)
     return '[no name]'
   endif
 
+  " Add fallback for non-filesystem buffers
+  if path =~# '^\(fugitive\|term\|help\)://'
+    return fnamemodify(path, ':t')
+  endif
+
   let conflicts = 1
   let tailnum = 1
   while conflicts
