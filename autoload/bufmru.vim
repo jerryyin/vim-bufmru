@@ -65,16 +65,14 @@ if !exists("g:bufmru_nb_to_keep")
 endif
 
 function! GetActiveBuffers()
-  let l:blist = getbufinfo({'buflisted': 1})
-  let l:result = []
-  for l:item in l:blist
-      " Skip unnamed buffers
-      if empty(l:item.name)
-          continue
-      endif
-      call add(l:result, l:item.bufnr)
-  endfor
-  return l:result
+	let bufs = range(1, bufnr("$"))
+	let res = []
+	for nr in bufs
+		if buflisted(nr)
+			call add(res, nr)
+		endif
+	endfor
+	return res
 endfunction
 
 " Function to limit open buffers to the specified maximum
